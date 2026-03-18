@@ -1,4 +1,3 @@
-// ELEMENTOS
 const form = document.getElementById("task-form");
 const input = document.getElementById("task-input");
 const list = document.getElementById("task-list");
@@ -12,17 +11,15 @@ const pendingEl = document.getElementById("pending");
 const completeAllBtn = document.getElementById("complete-all");
 const clearCompletedBtn = document.getElementById("clear-completed");
 
-// ESTADO
+
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let currentFilter = "all";
 let searchText = "";
 
-// INIT
+
 document.addEventListener("DOMContentLoaded", renderTasks);
 
-// =========================
-// CREAR TAREA
-// =========================
+
 form.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -43,22 +40,18 @@ form.addEventListener("submit", function (e) {
   input.value = "";
 });
 
-// =========================
-// RENDER
-// =========================
 function renderTasks() {
   list.innerHTML = "";
 
   let filtered = tasks;
 
-  // FILTRO estado
+
   if (currentFilter === "completed") {
     filtered = filtered.filter(t => t.completed);
   } else if (currentFilter === "pending") {
     filtered = filtered.filter(t => !t.completed);
   }
 
-  // FILTRO búsqueda
   if (searchText) {
     filtered = filtered.filter(t =>
       t.title.toLowerCase().includes(searchText)
@@ -72,16 +65,12 @@ function renderTasks() {
   updateStats();
 }
 
-// =========================
-// CREAR ELEMENTO DOM
-// =========================
 function createTaskElement(task) {
   const li = document.createElement("li");
 
   li.className =
     "flex justify-between items-center bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white px-3 py-2 rounded";
 
-  // TEXTO
   const span = document.createElement("span");
   span.textContent = task.title;
 
@@ -89,11 +78,9 @@ function createTaskElement(task) {
     span.classList.add("line-through", "opacity-60");
   }
 
-  // BOTONES
   const actions = document.createElement("div");
   actions.className = "flex gap-2";
 
-  // COMPLETAR
   const completeBtn = document.createElement("button");
   completeBtn.textContent = "✔";
   completeBtn.className = "bg-green-500 px-2 rounded text-white";
@@ -102,7 +89,6 @@ function createTaskElement(task) {
     toggleTask(task.id);
   });
 
-  // ELIMINAR
   const deleteBtn = document.createElement("button");
   deleteBtn.textContent = "X";
   deleteBtn.className =
@@ -121,9 +107,6 @@ function createTaskElement(task) {
   return li;
 }
 
-// =========================
-// ACCIONES
-// =========================
 function toggleTask(id) {
   tasks = tasks.map(task =>
     task.id === id ? { ...task, completed: !task.completed } : task
@@ -139,9 +122,6 @@ function deleteTask(id) {
   renderTasks();
 }
 
-// =========================
-// EXTRA BOTONES
-// =========================
 completeAllBtn.addEventListener("click", () => {
   tasks = tasks.map(task => ({ ...task, completed: true }));
   saveTasks();
@@ -154,9 +134,6 @@ clearCompletedBtn.addEventListener("click", () => {
   renderTasks();
 });
 
-// =========================
-// FILTROS
-// =========================
 document.querySelectorAll("[data-filter]").forEach(btn => {
   btn.addEventListener("click", () => {
     currentFilter = btn.dataset.filter;
@@ -164,17 +141,11 @@ document.querySelectorAll("[data-filter]").forEach(btn => {
   });
 });
 
-// =========================
-// BÚSQUEDA
-// =========================
 search.addEventListener("input", () => {
   searchText = search.value.toLowerCase();
   renderTasks();
 });
 
-// =========================
-// STATS
-// =========================
 function updateStats() {
   const total = tasks.length;
   const completed = tasks.filter(t => t.completed).length;
@@ -184,16 +155,10 @@ function updateStats() {
   pendingEl.textContent = total - completed;
 }
 
-// =========================
-// STORAGE
-// =========================
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// =========================
-// DARK MODE
-// =========================
 themeToggle.addEventListener("click", () => {
   document.documentElement.classList.toggle("dark");
 
@@ -201,7 +166,6 @@ themeToggle.addEventListener("click", () => {
   localStorage.setItem("darkMode", isDark);
 });
 
-// cargar preferencia
 if (localStorage.getItem("darkMode") === "true") {
   document.documentElement.classList.add("dark");
 }
